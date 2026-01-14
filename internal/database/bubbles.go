@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 	"github.com/magic_bubblez/link-hoarder/internal/models"
+	"encoding/json"
 )
 
-func CreateBubble(uid string, req models.CreateBubbleRequest) (models.Bubble, error) {
-	ctx := context.Background()
+// data transfer object (DTO) pattern
+func CreateBubble(ctx context.Context, uid string, req models.CreateBubbleRequest) (models.Bubble, error) {
 	var bubble models.Bubble
 
 	tx, err := DB.Begin(ctx)
@@ -15,7 +16,6 @@ func CreateBubble(uid string, req models.CreateBubbleRequest) (models.Bubble, er
 		return bubble, err
 	}
 	defer tx.Rollback(ctx)
-
 
 	err = tx.QueryRow(ctx, `
 		INSERT INTO bubbles (uid, name)
@@ -29,7 +29,6 @@ func CreateBubble(uid string, req models.CreateBubbleRequest) (models.Bubble, er
 
 	for _, tag := range req.Tags {
 		var catID string
-
 		// Create category if not exists
 		err := tx.QueryRow(ctx, `
 			WITH s AS (SELECT id FROM categories WHERE uid=$1 AND name=$2),
@@ -43,7 +42,7 @@ func CreateBubble(uid string, req models.CreateBubbleRequest) (models.Bubble, er
 
 		// Link in Bridge Table
 		_, err = tx.Exec(ctx, `
-			INSERT INTO bubble_categories (bubble_id, category_id)
+			INSERT INTO bridge (bid, cid)
 			VALUES ($1, $2)
 			ON CONFLICT DO NOTHING
 		`, bubble.ID, catID)
@@ -51,15 +50,47 @@ func CreateBubble(uid string, req models.CreateBubbleRequest) (models.Bubble, er
 		if err != nil {
 			return bubble, fmt.Errorf("failed to link tag: %w", err)
 		}
-		
-		// add to respose object
 		bubble.Tags = append(bubble.Tags, models.Category{ID: catID, Name: tag})
 	}
-	
-	
 	if err := tx.Commit(ctx); err != nil {
 		return bubble, err
 	}
-
 	return bubble, nil
 }
+
+// Get all bubbles for a user
+func GetAllBubbles(ctx context.Context, uid string) ([]models.Bubble, error) {
+    bubbles := []models.Bubble{}
+	query := `
+        SELECT b.id, b.name, b.created_at,
+        COALESCE(JSON_AGG(json_build_object(
+            			'id', c.id, 
+                        'uid', c.uid, 
+                        'name', c.name
+                    	)) FILTER (WHERE c.id IS NOT NULL), '[]') as tags
+        FROM bubbles b
+        LEFT JOIN bridge br ON b.id = br.bid
+        LEFT JOIN categories c ON br.cid = c.id
+        WHERE b.uid = $1 GROUP BY b.id
+    `
+    rows, err := DB.Query(ctx, query, uid)
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    for rows.Next() {
+        var b models.Bubble
+        var tags_json []byte // scan the raw json bytes first
+        if err := rows.Scan(&b.ID, &b.Name, &b.CreatedAt, &tags_json); err != nil {
+            return nil, err
+        }
+
+        if len(tags_json) > 0 {
+             _ = json.Unmarshal(tags_json, &b.Tags) 
+        }
+        bubbles = append(bubbles, b)
+    }   
+    return bubbles, nil
+}
+

@@ -15,7 +15,7 @@ const UserIDKey ContextKey = "user_id"
 func GuestMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {   //w is an interface, anything written to it goes to client
 																			// r is struct pointer. contains incoming request data
-		cookie, err := r.Cookie("session_token")
+		cookie, err := r.Cookie("session_pass")
 		var userID string
 
 		if err == nil {
@@ -35,10 +35,10 @@ func GuestMiddleware(next http.Handler) http.Handler {
 			}
 
 			http.SetCookie(w, &http.Cookie{
-				Name:     "session_token",
+				Name:     "session_pass",
 				Value:    userID,
 				Path:     "/",            // Cookie works on all pages
-				Expires:  time.Now().Add(7 * 24 * time.Hour), // 7 Days
+				Expires:  time.Now().Add(5 * 24 * time.Hour), // 5 Days
 				HttpOnly: true,           // Security: js cannot read this
 			})
 			
