@@ -1,20 +1,22 @@
 package auth
 
 import (
-	"context"   //holds data for passing it down the chain of handlers
+	"context" //holds data for passing it down the chain of handlers
 	"fmt"
 	"net/http"
 	"time"
+
 	"github.com/google/uuid"
 	"github.com/magic_bubblez/link-hoarder/internal/database"
 )
 
 type ContextKey string
+
 const UserIDKey ContextKey = "user_id"
 
 func GuestMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {   //w is an interface, anything written to it goes to client
-																			// r is struct pointer. contains incoming request data
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { //w is an interface, anything written to it goes to client
+		// r is struct pointer. contains incoming request data
 		cookie, err := r.Cookie("session_pass")
 		var userID string
 
@@ -24,8 +26,8 @@ func GuestMiddleware(next http.Handler) http.Handler {
 		} else {
 			userID = uuid.New().String()
 
-			_, dbErr := database.DB.Exec(context.Background(), 
-				`INSERT INTO users (id, is_guest, created_at) VALUES ($1, true, NOW())`, 
+			_, dbErr := database.DB.Exec(context.Background(),
+				`INSERT INTO users (id, is_guest, created_at) VALUES ($1, true, NOW())`,
 				userID,
 			)
 			if dbErr != nil {
@@ -37,11 +39,11 @@ func GuestMiddleware(next http.Handler) http.Handler {
 			http.SetCookie(w, &http.Cookie{
 				Name:     "session_pass",
 				Value:    userID,
-				Path:     "/",            // Cookie works on all pages
+				Path:     "/",
 				Expires:  time.Now().Add(5 * 24 * time.Hour), // 5 Days
-				HttpOnly: true,           // Security: js cannot read this
+				HttpOnly: true,                               // Security: js cannot read this
 			})
-			
+
 			fmt.Println("New Guest Created:", userID)
 		}
 

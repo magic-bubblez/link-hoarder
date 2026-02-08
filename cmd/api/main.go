@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/joho/godotenv"
 	"golang.org/x/time/rate"
 
 	"github.com/magic_bubblez/link-hoarder/internal/auth"
@@ -14,12 +15,22 @@ import (
 )
 
 func main() {
+	// Load .env file
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, using system env vars")
+	}
+
 	pool, err := database.Connection()
 	if err != nil {
 		log.Fatal("Failed to connect to database:", err)
 	}
 	database.DB = pool
 	defer database.DB.Close()
+
+	auth.InitGoogleAuth()
+
+	// Start the worker pool: 50 workers, buffer for 1000 pending jobs
+	StartScrapeWorkers(50, 1000)
 
 	mux := http.NewServeMux()
 
@@ -28,9 +39,20 @@ func main() {
 
 		fmt.Fprintf(w, "Welcome to Bubbles!\nYour User ID is: %s", userID)
 	})
+
+	// Bubble routes
 	mux.HandleFunc("POST /bubbles", CreateBubbleHandler)
-	mux.HandleFunc("POST /bubbles/{bid}/links", AddLinkHandler)
 	mux.HandleFunc("GET /bubbles", GetAllBubblesHandler)
+	mux.HandleFunc("DELETE /bubbles/{bid}", DeleteBubbleHandler)
+
+	// Link routes
+	mux.HandleFunc("POST /bubbles/{bid}/links", AddLinkHandler)
+	mux.HandleFunc("GET /bubbles/{bid}/links", GetLinksForBubbleHandler)
+	mux.HandleFunc("DELETE /bubbles/{bid}/links/{lid}", DeleteLinkHandler)
+
+	// Auth routes (Google OAuth)
+	mux.HandleFunc("GET /auth/google/login", auth.GoogleLoginHandler)
+	mux.HandleFunc("GET /auth/google/callback", auth.GoogleCallbackHandler)
 
 	limiter := middleware.NewRateLimiter(rate.Limit(5), 10)
 	handler := limiter.Limit(auth.GuestMiddleware(mux))

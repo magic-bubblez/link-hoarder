@@ -2,9 +2,10 @@ package database
 
 import (
 	"context"
-	"fmt"
-	"github.com/magic_bubblez/link-hoarder/internal/models"
 	"encoding/json"
+	"fmt"
+
+	"github.com/magic_bubblez/link-hoarder/internal/models"
 )
 
 // data transfer object (DTO) pattern
@@ -58,9 +59,8 @@ func CreateBubble(ctx context.Context, uid string, req models.CreateBubbleReques
 	return bubble, nil
 }
 
-// Get all bubbles for a user
 func GetAllBubbles(ctx context.Context, uid string) ([]models.Bubble, error) {
-    bubbles := []models.Bubble{}
+	bubbles := []models.Bubble{}
 	query := `
         SELECT b.id, b.name, b.created_at,
         COALESCE(JSON_AGG(json_build_object(
@@ -73,24 +73,23 @@ func GetAllBubbles(ctx context.Context, uid string) ([]models.Bubble, error) {
         LEFT JOIN categories c ON br.cid = c.id
         WHERE b.uid = $1 GROUP BY b.id
     `
-    rows, err := DB.Query(ctx, query, uid)
-    if err != nil {
-        return nil, err
-    }
-    defer rows.Close()
+	rows, err := DB.Query(ctx, query, uid)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-    for rows.Next() {
-        var b models.Bubble
-        var tags_json []byte // scan the raw json bytes first
-        if err := rows.Scan(&b.ID, &b.Name, &b.CreatedAt, &tags_json); err != nil {
-            return nil, err
-        }
+	for rows.Next() {
+		var b models.Bubble
+		var tags_json []byte // scan the raw json bytes first
+		if err := rows.Scan(&b.ID, &b.Name, &b.CreatedAt, &tags_json); err != nil {
+			return nil, err
+		}
 
-        if len(tags_json) > 0 {
-             _ = json.Unmarshal(tags_json, &b.Tags) 
-        }
-        bubbles = append(bubbles, b)
-    }   
-    return bubbles, nil
+		if len(tags_json) > 0 {
+			_ = json.Unmarshal(tags_json, &b.Tags)
+		}
+		bubbles = append(bubbles, b)
+	}
+	return bubbles, nil
 }
-

@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// users table
+// Users table
 type User struct {
 	ID        string    `json:"id"`
 	IsGuest   bool      `json:"is_guest"`
@@ -26,7 +26,7 @@ type Bubble struct {
 	UserID    string     `json:"uid"`
 	Name      string     `json:"name"`
 	CreatedAt time.Time  `json:"created_at"`
-	Tags      []Category `json:"tags, omitempty"`
+	Tags      []Category `json:"tags,omitempty"`
 }
 
 // links table
