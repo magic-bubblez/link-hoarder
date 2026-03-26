@@ -270,16 +270,21 @@ textarea {
     border: 2px solid var(--text-dark);
     box-shadow: 3px 3px 0px var(--border-dark);
     cursor: pointer;
-    transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
     text-align: center;
     padding: 22px;
-    /* default blob shape */
-    border-radius: 50%;
     position: relative;
     overflow: hidden;
+    isolation: isolate;
+    background-clip: padding-box;
+    border-radius: 50%;
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transition: transform 0.3s var(--ease-out),
+                box-shadow 0.3s var(--ease-out);
 }
 
-/* Grainy film texture overlay */
+/* Grain texture */
 .bubble::after {
     content: '';
     position: absolute;
@@ -287,20 +292,25 @@ textarea {
     border-radius: inherit;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
     background-size: 128px 128px;
-    opacity: 0.6;
+    opacity: 0.55;
     mix-blend-mode: multiply;
     pointer-events: none;
     z-index: 1;
 }
 
 .bubble:hover {
-    transform: translate(-2px, -2px) rotate(-2deg);
-    box-shadow: 5px 5px 0px var(--border-dark);
+    transform: translate(-3px, -3px) rotate(-1.8deg);
+    box-shadow: 6px 6px 0px var(--border-dark);
 }
 
 .bubble:active {
-    transform: translate(1px, 1px);
+    transform: translate(1.5px, 1.5px) rotate(0.8deg);
     box-shadow: 1px 1px 0px var(--border-dark);
+}
+
+.bubble > * {
+    position: relative;
+    z-index: 2;
 }
 
 .bubble-name {
@@ -373,57 +383,19 @@ textarea {
 
 
 
-/* ── 12 Soft Blob Shapes ──
-   Gentle organic distortion — squished circles, not amoebas.
-   Values stay in the 40%-60% range for readability. */
-
-.blob-1 {
-    border-radius: 54% 46% 48% 52% / 48% 52% 46% 54%;
-}
-
-.blob-2 {
-    border-radius: 46% 54% 52% 48% / 55% 45% 50% 50%;
-}
-
-.blob-3 {
-    border-radius: 52% 48% 45% 55% / 50% 50% 55% 45%;
-}
-
-.blob-4 {
-    border-radius: 48% 52% 55% 45% / 45% 55% 48% 52%;
-}
-
-.blob-5 {
-    border-radius: 55% 45% 50% 50% / 46% 54% 52% 48%;
-}
-
-.blob-6 {
-    border-radius: 45% 55% 48% 52% / 52% 48% 45% 55%;
-}
-
-.blob-7 {
-    border-radius: 50% 50% 54% 46% / 44% 56% 50% 50%;
-}
-
-.blob-8 {
-    border-radius: 53% 47% 46% 54% / 54% 46% 47% 53%;
-}
-
-.blob-9 {
-    border-radius: 47% 53% 50% 50% / 50% 50% 53% 47%;
-}
-
-.blob-10 {
-    border-radius: 44% 56% 53% 47% / 47% 53% 56% 44%;
-}
-
-.blob-11 {
-    border-radius: 56% 44% 47% 53% / 53% 47% 44% 56%;
-}
-
-.blob-12 {
-    border-radius: 50% 50% 44% 56% / 56% 44% 50% 50%;
-}
+/* ── 12 Soft but Distinct Blob Shapes ── */
+.blob-1  { border-radius: 58% 42% 52% 48% / 48% 52% 45% 55%; }
+.blob-2  { border-radius: 45% 55% 48% 52% / 55% 45% 52% 48%; }
+.blob-3  { border-radius: 52% 48% 55% 45% / 50% 50% 47% 53%; }
+.blob-4  { border-radius: 47% 53% 46% 54% / 44% 56% 50% 50%; }
+.blob-5  { border-radius: 55% 45% 51% 49% / 46% 54% 53% 47%; }
+.blob-6  { border-radius: 48% 52% 54% 46% / 52% 48% 45% 55%; }
+.blob-7  { border-radius: 50% 50% 47% 53% / 56% 44% 52% 48%; }
+.blob-8  { border-radius: 53% 47% 49% 51% / 45% 55% 54% 46%; }
+.blob-9  { border-radius: 46% 54% 52% 48% / 50% 50% 47% 53%; }
+.blob-10 { border-radius: 54% 46% 48% 52% / 47% 53% 55% 45%; }
+.blob-11 { border-radius: 49% 51% 53% 47% / 56% 44% 48% 52%; }
+.blob-12 { border-radius: 51% 49% 45% 55% / 48% 52% 50% 50%; }
 
 /* ── Component: Search ── */
 .search-bar {

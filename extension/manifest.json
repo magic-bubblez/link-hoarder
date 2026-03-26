@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Bublet",
+  "version": "1.0",
+  "description": "Save links to your bubbles",
+  "icons": {
+    "48": "icon-48.png",
+    "128": "icon-128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "icon-48.png",
+      "128": "icon-128.png"
+    }
+  },
+  "permissions": ["activeTab", "cookies"],
+  "host_permissions": ["https://bublet.app/*"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "extension@bublet.app",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  }
+}

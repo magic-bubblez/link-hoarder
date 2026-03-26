@@ -78,7 +78,7 @@ func main() {
 	topMux.Handle("/auth/", auth.GuestMiddleware(authMux))
 
 	limiter := middleware.NewRateLimiter(rate.Limit(5), 10)
-	handler := limiter.Limit(topMux)
+	handler := middleware.CORS(limiter.Limit(topMux))
 
 	fmt.Println("server starting on http://localhost:8080")
 	if err := http.ListenAndServe(":8080", handler); err != nil {

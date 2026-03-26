@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap');
+
+    :root {
+      --bg-warm: #faf5ef;
+      --bg-cream: #f5ede3;
+      --bg-deep: #1c1520;
+      --rose: #d4829a;
+      --peach: #e8b4a0;
+      --lavender: #b8a9d4;
+      --sage: #9bc4a8;
+      --sky: #8cb8d4;
+      --gold: #d4a65a;
+      --coral: #d9968a;
+      --teal: #7bb8b0;
+      --text-light: #f5ede3;
+      --text-dark: #2a2230;
+      --text-body: #5a4e68;
+      --text-muted: #a09aac;
+      --border-dark: #3d3348;
+      --border-light: #d8cfc4;
+      --shadow-hard-sm: 3px 3px 0px #3d3348;
+      --font-cursive: 'Dancing Script', cursive;
+      --font-body: 'Inter', -apple-system, sans-serif;
+      --font-mono: 'Space Mono', monospace;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 320px;
+      font-family: var(--font-body);
+      background: var(--bg-warm);
+      color: var(--text-dark);
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--bg-deep);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--border-dark);
+    }
+
+    .logo {
+      font-family: var(--font-cursive);
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--lavender);
+    }
+
+    .open-site {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 4px 10px;
+      border: 1px solid var(--border-dark);
+      border-radius: 4px;
+      transition: all 0.15s;
+      cursor: pointer;
+      background: none;
+    }
+
+    .open-site:hover {
+      color: var(--text-light);
+      border-color: var(--lavender);
+    }
+
+    /* ── Link Preview ── */
+    .link-preview {
+      padding: 12px 16px;
+      background: var(--bg-cream);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .link-preview-label {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .link-preview-content {
+      font-size: 0.75rem;
+      color: var(--text-dark);
+      line-height: 1.4;
+      word-break: break-all;
+    }
+
+    .link-title {
+      font-weight: 600;
+    }
+
+    .link-url {
+      color: var(--text-body);
+      font-size: 0.65rem;
+    }
+
+    /* ── Search ── */
+    .search-bar {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      border: 2px solid var(--border-light);
+      border-radius: 6px;
+      background: white;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .search-bar input:focus {
+      border-color: var(--lavender);
+    }
+
+    .search-bar input::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* ── Bubble List ── */
+    .bubble-list {
+      max-height: 260px;
+      overflow-y: auto;
+      padding: 6px 0;
+    }
+
+    .bubble-list::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .bubble-list::-webkit-scrollbar-thumb {
+      background: var(--border-light);
+      border-radius: 4px;
+    }
+
+    .bubble-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 16px;
+      cursor: pointer;
+      transition: background 0.1s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-family: var(--font-body);
+    }
+
+    .bubble-item:hover {
+      background: var(--bg-cream);
+    }
+
+    .bubble-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 54% 46% 48% 52% / 48% 52% 46% 54%;
+      border: 2px solid var(--border-dark);
+      flex-shrink: 0;
+      box-shadow: 2px 2px 0px var(--border-dark);
+    }
+
+    .bubble-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .bubble-name {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .bubble-count {
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    /* ── New Bubble ── */
+    .new-bubble-section {
+      padding: 10px 16px 14px;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .new-bubble-btn {
+      width: 100%;
+      padding: 9px 14px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.5px;
+      color: var(--text-body);
+      background: white;
+      border: 2px dashed var(--border-light);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .new-bubble-btn:hover {
+      border-color: var(--lavender);
+      color: var(--text-dark);
+      border-style: solid;
+    }
+
+    .new-bubble-form {
+      display: none;
+      gap: 8px;
+    }
+
+    .new-bubble-form.active {
+      display: flex;
+    }
+
+    .new-bubble-form input {
+      flex: 1;
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      border: 2px solid var(--border-light);
+      border-radius: 6px;
+      background: white;
+      color: var(--text-dark);
+      outline: none;
+    }
+
+    .new-bubble-form input:focus {
+      border-color: var(--lavender);
+    }
+
+    .new-bubble-form button {
+      padding: 8px 14px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: var(--rose);
+      color: var(--text-light);
+      border: 2px solid var(--border-dark);
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: var(--shadow-hard-sm);
+      transition: all 0.15s;
+    }
+
+    .new-bubble-form button:hover {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border-dark);
+    }
+
+    /* ── States ── */
+    .toast {
+      padding: 10px 16px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.5px;
+      display: none;
+    }
+
+    .toast.success {
+      display: block;
+      background: var(--sage);
+      color: var(--text-dark);
+      border-top: 2px solid var(--border-dark);
+    }
+
+    .toast.error {
+      display: block;
+      background: var(--rose);
+      color: var(--text-light);
+      border-top: 2px solid var(--border-dark);
+    }
+
+    .loading {
+      padding: 30px 16px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+    }
+
+    .not-logged-in {
+      padding: 30px 16px;
+      text-align: center;
+    }
+
+    .not-logged-in p {
+      font-size: 0.8rem;
+      color: var(--text-body);
+      margin-bottom: 12px;
+    }
+
+    .not-logged-in a {
+      display: inline-block;
+      padding: 9px 20px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      background: var(--rose);
+      color: var(--text-light);
+      border: 2px solid var(--border-dark);
+      border-radius: 6px;
+      box-shadow: var(--shadow-hard-sm);
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .not-logged-in a:hover {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border-dark);
+    }
+
+    .empty-state {
+      padding: 30px 16px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <div class="header">
+    <span class="logo">bublet</span>
+    <button class="open-site" id="open-site">open bublet</button>
+  </div>
+
+  <!-- Link being saved -->
+  <div class="link-preview">
+    <div class="link-preview-label">saving</div>
+    <div class="link-preview-content">
+      <div class="link-title" id="link-title">Loading...</div>
+      <div class="link-url" id="link-url"></div>
+    </div>
+  </div>
+
+  <!-- Main content (swapped based on state) -->
+  <div id="main-content">
+    <div class="loading" id="loading">loading bubbles...</div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="popup.js"></script>
+</body>
+
+</html>

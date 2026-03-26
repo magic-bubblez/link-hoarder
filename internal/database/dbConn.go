@@ -12,7 +12,7 @@ import (
 var DB *pgxpool.Pool
 
 func Connection() (*pgxpool.Pool, error) {
-	db_url := os.Getenv("NEON_DB")
+	db_url := os.Getenv("LOCAL_DB")
 
 	config, err := pgxpool.ParseConfig(db_url) //convert db url to config struct which checks if url format is valid
 	if err != nil {
