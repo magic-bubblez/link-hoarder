@@ -257,6 +257,23 @@ textarea {
     color: var(--text-muted);
 }
 
+/* ── Bubble Shadow Wrapper ── */
+.bubble-shadow-wrap {
+    filter: drop-shadow(3px 3px 0px var(--border-dark));
+    transition: transform 0.3s var(--ease-out), filter 0.3s var(--ease-out);
+    cursor: pointer;
+}
+
+.bubble-shadow-wrap:hover {
+    transform: translate(-3px, -3px);
+    filter: drop-shadow(6px 6px 0px var(--border-dark));
+}
+
+.bubble-shadow-wrap:active {
+    transform: translate(1.5px, 1.5px);
+    filter: drop-shadow(1px 1px 0px var(--border-dark));
+}
+
 /* ── Component: Bubble (Organic Shapes) ── */
 .bubble {
     display: flex;
@@ -268,7 +285,6 @@ textarea {
     height: 160px;
     background: var(--bg-cream);
     border: 2px solid var(--text-dark);
-    box-shadow: 3px 3px 0px var(--border-dark);
     cursor: pointer;
     text-align: center;
     padding: 22px;
@@ -299,13 +315,11 @@ textarea {
 }
 
 .bubble:hover {
-    transform: translate(-3px, -3px) rotate(-1.8deg);
-    box-shadow: 6px 6px 0px var(--border-dark);
+    transform: rotate(-1.8deg);
 }
 
 .bubble:active {
-    transform: translate(1.5px, 1.5px) rotate(0.8deg);
-    box-shadow: 1px 1px 0px var(--border-dark);
+    transform: rotate(0.8deg);
 }
 
 .bubble > * {

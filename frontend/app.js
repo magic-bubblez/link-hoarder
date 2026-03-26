@@ -818,12 +818,15 @@
     }
 
     function createBubbleElement(bubble, index) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'bubble-shadow-wrap';
+        wrapper.style.animationDelay = `${index * 0.05}s`;
+
         const el = document.createElement('div');
         const variant = BUBBLE_VARIANTS[index % BUBBLE_VARIANTS.length];
         const blobNum = getBlobForBubble(bubble.id);
         el.className = `bubble ${variant} blob-${blobNum}`;
         el.dataset.id = bubble.id;
-        el.style.animationDelay = `${index * 0.05}s`;
         el.title = bubble.name;
 
         const itemCount = bubble.item_count || 0;
@@ -833,16 +836,18 @@
         `;
 
         el.addEventListener('click', () => {
-            el.style.transform = 'translate(1px, 1px)';
-            el.style.boxShadow = '1px 1px 0px var(--border-dark)';
+            wrapper.style.transform = 'translate(1px, 1px)';
+            wrapper.style.filter = 'drop-shadow(1px 1px 0px var(--border-dark))';
             setTimeout(() => {
-                el.style.transform = '';
-                el.style.boxShadow = '';
+                wrapper.style.transform = '';
+                wrapper.style.filter = '';
                 openDetailModal(bubble);
             }, 150);
         });
 
-        return el;
+        wrapper.appendChild(el);
+
+        return wrapper;
     }
 
     // ── Filtering ──
