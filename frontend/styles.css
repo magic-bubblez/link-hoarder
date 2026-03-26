@@ -1,0 +1,610 @@
+/* ============================================
+   BUBLET — Design System: "Retro Bubblegum"
+   Flat · Sharp · Warm · Retro
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+/* ── Tokens ── */
+:root {
+    /* backgrounds */
+    --bg-deep: #1c1520;
+    --bg-card: #2a2230;
+    --bg-warm: #faf5ef;
+    --bg-cream: #f5ede3;
+
+    /* accent */
+    --lavender: #b8a9d4;
+    --rose: #d4829a;
+    --peach: #e8b4a0;
+    --gold: #d4a65a;
+    --sage: #9bc4a8;
+    --sky: #8cb8d4;
+    --mauve: #c49ab5;
+    --coral: #d9968a;
+    --teal: #7bb8b0;
+    --lilac: #c4a8d8;
+    --mint: #a3d4b7;
+
+    /* text */
+    --text-light: #f5ede3;
+    --text-muted: #a09aac;
+    --text-dark: #2a2230;
+    --text-body: #5a4e68;
+
+    /* borders */
+    --border-dark: #3d3348;
+    --border-light: #d8cfc4;
+    --border-accent: var(--lavender);
+
+    /* hard shadows (retro offset) */
+    --shadow-hard: 4px 4px 0px var(--border-dark);
+    --shadow-hard-sm: 3px 3px 0px var(--border-dark);
+    --shadow-hard-light: 4px 4px 0px var(--border-light);
+    --shadow-hard-accent: 4px 4px 0px var(--lavender);
+
+    /* radii — retro = minimal rounding */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-full: 999px;
+
+    /* typography */
+    --font-cursive: 'Dancing Script', cursive;
+    --font-body: 'Inter', -apple-system, sans-serif;
+    --font-mono: 'Space Mono', monospace;
+
+    /* transitions */
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── Reset ── */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    font-family: var(--font-body);
+    color: var(--text-dark);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: inherit;
+}
+
+input,
+select,
+textarea {
+    font-family: inherit;
+    border: none;
+    outline: none;
+}
+
+/* ── Component: Buttons ── */
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 36px;
+    background: var(--rose);
+    color: var(--text-light);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border: 2px solid var(--text-dark);
+    box-shadow: var(--shadow-hard);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.btn-primary:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--border-dark);
+}
+
+.btn-primary:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px var(--border-dark);
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: transparent;
+    color: var(--text-dark);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 2px solid var(--border-light);
+    transition: all 0.15s;
+}
+
+.btn-secondary:hover {
+    border-color: var(--text-dark);
+    background: var(--bg-cream);
+}
+
+.btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    background: var(--lavender);
+    color: var(--text-dark);
+    font-size: 1.5rem;
+    font-weight: 700;
+    border: 2px solid var(--text-dark);
+    box-shadow: var(--shadow-hard-sm);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.btn-icon:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0px var(--border-dark);
+}
+
+.btn-icon:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px var(--border-dark);
+}
+
+/* ── Component: Modal ── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(28, 21, 32, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-card {
+    background: var(--bg-warm);
+    border: 2px solid var(--text-dark);
+    box-shadow: 8px 8px 0px var(--border-dark);
+    padding: 40px;
+    max-width: 480px;
+    width: 90%;
+    position: relative;
+}
+
+.modal-card h2 {
+    font-family: var(--font-cursive);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+}
+
+.modal-card h3 {
+    font-family: var(--font-cursive);
+    font-size: 1.3rem;
+    color: var(--rose);
+    margin-bottom: 20px;
+}
+
+.modal-card p {
+    color: var(--text-body);
+    font-size: 0.92rem;
+    line-height: 1.7;
+    margin-bottom: 14px;
+}
+
+/* ── Component: Form Fields ── */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-body);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: white;
+    border: 2px solid var(--border-light);
+    font-size: 0.92rem;
+    color: var(--text-dark);
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    border-color: var(--lavender);
+}
+
+.form-input::placeholder {
+    color: var(--text-muted);
+}
+
+/* ── Component: Bubble (Organic Shapes) ── */
+.bubble {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 170px;
+    height: 160px;
+    background: var(--bg-cream);
+    border: 2px solid var(--text-dark);
+    box-shadow: 3px 3px 0px var(--border-dark);
+    cursor: pointer;
+    transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+    text-align: center;
+    padding: 22px;
+    /* default blob shape */
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Grainy film texture overlay */
+.bubble::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+    opacity: 0.6;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.bubble:hover {
+    transform: translate(-2px, -2px) rotate(-2deg);
+    box-shadow: 5px 5px 0px var(--border-dark);
+}
+
+.bubble:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px var(--border-dark);
+}
+
+.bubble-name {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.3;
+    position: relative;
+    z-index: 2;
+}
+
+.bubble-link-count {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 400;
+    color: var(--text-body);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    position: relative;
+    z-index: 2;
+}
+
+/* ── Bubble Color Variants ── */
+.bubble.variant-rose {
+    background: var(--rose);
+}
+
+.bubble.variant-rose .bubble-name,
+.bubble.variant-rose .bubble-link-count {
+    color: var(--text-light);
+}
+
+.bubble.variant-peach {
+    background: var(--peach);
+}
+
+.bubble.variant-lavender {
+    background: var(--lavender);
+}
+
+.bubble.variant-cream {
+    background: var(--bg-warm);
+}
+
+.bubble.variant-sage {
+    background: var(--sage);
+}
+
+.bubble.variant-sky {
+    background: var(--sky);
+}
+
+.bubble.variant-gold {
+    background: var(--gold);
+}
+
+.bubble.variant-coral {
+    background: var(--coral);
+}
+
+.bubble.variant-teal {
+    background: var(--teal);
+}
+
+
+
+/* ── 12 Soft Blob Shapes ──
+   Gentle organic distortion — squished circles, not amoebas.
+   Values stay in the 40%-60% range for readability. */
+
+.blob-1 {
+    border-radius: 54% 46% 48% 52% / 48% 52% 46% 54%;
+}
+
+.blob-2 {
+    border-radius: 46% 54% 52% 48% / 55% 45% 50% 50%;
+}
+
+.blob-3 {
+    border-radius: 52% 48% 45% 55% / 50% 50% 55% 45%;
+}
+
+.blob-4 {
+    border-radius: 48% 52% 55% 45% / 45% 55% 48% 52%;
+}
+
+.blob-5 {
+    border-radius: 55% 45% 50% 50% / 46% 54% 52% 48%;
+}
+
+.blob-6 {
+    border-radius: 45% 55% 48% 52% / 52% 48% 45% 55%;
+}
+
+.blob-7 {
+    border-radius: 50% 50% 54% 46% / 44% 56% 50% 50%;
+}
+
+.blob-8 {
+    border-radius: 53% 47% 46% 54% / 54% 46% 47% 53%;
+}
+
+.blob-9 {
+    border-radius: 47% 53% 50% 50% / 50% 50% 53% 47%;
+}
+
+.blob-10 {
+    border-radius: 44% 56% 53% 47% / 47% 53% 56% 44%;
+}
+
+.blob-11 {
+    border-radius: 56% 44% 47% 53% / 53% 47% 44% 56%;
+}
+
+.blob-12 {
+    border-radius: 50% 50% 44% 56% / 56% 44% 50% 50%;
+}
+
+/* ── Component: Search ── */
+.search-bar {
+    position: relative;
+    max-width: 280px;
+    flex: 1;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px 16px 10px 40px;
+    background: white;
+    border: 2px solid var(--border-light);
+    font-size: 0.85rem;
+    color: var(--text-dark);
+    transition: border-color 0.2s;
+}
+
+.search-bar input:focus {
+    border-color: var(--lavender);
+}
+
+.search-bar .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+/* ── Component: Tag Filter ── */
+.tag-filter {
+    position: relative;
+}
+
+.tag-filter select {
+    padding: 10px 36px 10px 16px;
+    background: white;
+    border: 2px solid var(--border-light);
+    font-size: 0.85rem;
+    color: var(--text-dark);
+    appearance: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    min-width: 140px;
+}
+
+.tag-filter select:focus {
+    border-color: var(--lavender);
+}
+
+.tag-filter::after {
+    content: '▾';
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    font-size: 0.75rem;
+}
+
+/* ── Component: Tag Chips ── */
+.tag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: var(--lavender);
+    color: var(--text-dark);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 1px solid var(--text-dark);
+}
+
+.tag-chip .remove-tag {
+    font-size: 0.8rem;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+}
+
+.tag-chip .remove-tag:hover {
+    opacity: 1;
+}
+
+/* ── Link List ── */
+.link-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.link-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: white;
+    border: 1px solid var(--border-light);
+    font-size: 0.82rem;
+    color: var(--text-body);
+    word-break: break-all;
+}
+
+.link-item .remove-link {
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    color: var(--rose);
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.15s;
+}
+
+.link-item .remove-link:hover {
+    opacity: 1;
+}
+
+/* ── Utility ── */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* ── Animations (minimal) ── */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes pop-in {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    70% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .modal-card {
+        padding: 28px 24px;
+        max-width: 95%;
+    }
+
+    .bubble {
+        width: 100px;
+        height: 100px;
+    }
+
+    .bubble-name {
+        font-size: 0.7rem;
+        max-width: 70px;
+    }
+
+    .bubble-link-count {
+        font-size: 0.5rem;
+    }
+}

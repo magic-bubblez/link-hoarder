@@ -8,6 +8,12 @@ import (
 	"github.com/magic_bubblez/link-hoarder/internal/models"
 )
 
+func CountBubblesForUser(ctx context.Context, uid string) (int, error) {
+	var count int
+	err := DB.QueryRow(ctx, `SELECT COUNT(*) FROM bubbles WHERE uid = $1`, uid).Scan(&count)
+	return count, err
+}
+
 // data transfer object (DTO) pattern
 func CreateBubble(ctx context.Context, uid string, req models.CreateBubbleRequest) (models.Bubble, error) {
 	var bubble models.Bubble
@@ -67,11 +73,13 @@ func GetAllBubbles(ctx context.Context, uid string) ([]models.Bubble, error) {
             			'id', c.id, 
                         'uid', c.uid, 
                         'name', c.name
-                    	)) FILTER (WHERE c.id IS NOT NULL), '[]') as tags
+                    	)) FILTER (WHERE c.id IS NOT NULL), '[]') as tags,
+        (SELECT COUNT(*) FROM items i WHERE i.bid = b.id) as item_count
         FROM bubbles b
         LEFT JOIN bridge br ON b.id = br.bid
         LEFT JOIN categories c ON br.cid = c.id
         WHERE b.uid = $1 GROUP BY b.id
+        ORDER BY b.created_at DESC
     `
 	rows, err := DB.Query(ctx, query, uid)
 	if err != nil {
@@ -81,8 +89,8 @@ func GetAllBubbles(ctx context.Context, uid string) ([]models.Bubble, error) {
 
 	for rows.Next() {
 		var b models.Bubble
-		var tags_json []byte // scan the raw json bytes first
-		if err := rows.Scan(&b.ID, &b.Name, &b.CreatedAt, &tags_json); err != nil {
+		var tags_json []byte
+		if err := rows.Scan(&b.ID, &b.Name, &b.CreatedAt, &tags_json, &b.ItemCount); err != nil {
 			return nil, err
 		}
 
@@ -92,4 +100,42 @@ func GetAllBubbles(ctx context.Context, uid string) ([]models.Bubble, error) {
 		bubbles = append(bubbles, b)
 	}
 	return bubbles, nil
+}
+
+func UpdateBubbleName(ctx context.Context, uid string, bid string, name string) error {
+	query := `UPDATE bubbles SET name = $1 WHERE id = $2 AND uid = $3`
+	result, err := DB.Exec(ctx, query, name, bid, uid)
+	if err != nil {
+		return err
+	}
+	if result.RowsAffected() == 0 {
+		return fmt.Errorf("bubble not found or permission denied")
+	}
+	return nil
+}
+
+func SetUserVisibility(ctx context.Context, uid string, slug *string) (*string, error) {
+	query := `UPDATE users SET public_slug = $1 WHERE id = $2 RETURNING public_slug`
+	var result *string
+	err := DB.QueryRow(ctx, query, slug, uid).Scan(&result)
+	if err != nil {
+		return nil, fmt.Errorf("failed to update visibility: %w", err)
+	}
+	return result, nil
+}
+
+func GetPublicUserBubbles(ctx context.Context, slug string) (string, []models.Bubble, error) {
+	// First find the user by slug
+	var uid string
+	err := DB.QueryRow(ctx, `SELECT id FROM users WHERE public_slug = $1`, slug).Scan(&uid)
+	if err != nil {
+		return "", nil, err
+	}
+
+	// Then get all their bubbles (reuse the same query shape)
+	bubbles, err := GetAllBubbles(ctx, uid)
+	if err != nil {
+		return "", nil, err
+	}
+	return uid, bubbles, nil
 }

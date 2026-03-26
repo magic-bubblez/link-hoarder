@@ -7,10 +7,11 @@ import (
 
 // Users table
 type User struct {
-	ID        string    `json:"id"`
-	IsGuest   bool      `json:"is_guest"`
-	CreatedAt time.Time `json:"created_at"`
-	Email     *string   `json:"email"`
+	ID         string    `json:"id"`
+	IsGuest    bool      `json:"is_guest"`
+	CreatedAt  time.Time `json:"created_at"`
+	Email      *string   `json:"email"`
+	PublicSlug *string   `json:"public_slug,omitempty"`
 }
 
 // categories table
@@ -27,15 +28,14 @@ type Bubble struct {
 	Name      string     `json:"name"`
 	CreatedAt time.Time  `json:"created_at"`
 	Tags      []Category `json:"tags,omitempty"`
+	ItemCount int        `json:"item_count"`
 }
 
-// links table
-type Link struct {
+// items table
+type Item struct {
 	ID        string    `json:"id"`
 	BubbleID  string    `json:"bid"`
-	URL       string    `json:"url"`
-	Title     *string   `json:"title"`
-	IconURL   *string   `json:"icon_url"`
+	Content   string    `json:"content"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
@@ -51,7 +51,7 @@ type CreateBubbleRequest struct {
 	Tags []string `json:"tags"`
 }
 
-// add link payload
-type AddLinkRequest struct {
-	Link string `json:"link"`
+// add item payload
+type AddItemRequest struct {
+	Content string `json:"content"`
 }

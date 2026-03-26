@@ -80,9 +80,11 @@ func GoogleCallbackHandler(w http.ResponseWriter, r *http.Request) {
 		Path:     "/",
 		Expires:  time.Now().Add(30 * 24 * time.Hour),
 		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
 	})
 
-	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+	http.Redirect(w, r, "/dashboard.html", http.StatusTemporaryRedirect)
 }
 
 // fetchGoogleUserInfo calls Google's API to get user profile

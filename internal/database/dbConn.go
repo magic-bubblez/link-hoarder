@@ -3,6 +3,7 @@ package database
 import (
 	"context" //used here for timeouts and cancellations
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -11,7 +12,7 @@ import (
 var DB *pgxpool.Pool
 
 func Connection() (*pgxpool.Pool, error) {
-	db_url := "postgres://admin:secret@localhost:5432/link-hoarder"
+	db_url := os.Getenv("NEON_DB")
 
 	config, err := pgxpool.ParseConfig(db_url) //convert db url to config struct which checks if url format is valid
 	if err != nil {
